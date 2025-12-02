@@ -5,10 +5,11 @@ services:
   backend:
     build: ./backend
     container_name: nuel_backend
+    restart: always
     ports:
       - "5000:5000"
     environment:
-      - MONGO_URI=mongodb://mongo:27017/nuel_db
+      - MONGO_URI=mongodb://admin:adminpassword@mongo:27017/nuel_db?authSource=admin
       - FLASK_ENV=production
       - SECRET_KEY=supersecretkey
     depends_on:
@@ -19,17 +20,19 @@ services:
   mongo:
     image: mongo:6.0
     container_name: nuel_mongo
+    restart: always
     ports:
       - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: adminpassword
     volumes:
       - mongo_data:/data/db
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=adminpassword
 
   mongo-express:
     image: mongo-express:1.0.0
     container_name: nuel_mongo_express
+    restart: always
     ports:
       - "8081:8081"
     environment:
