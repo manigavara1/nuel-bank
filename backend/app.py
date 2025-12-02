@@ -1,14 +1,20 @@
 from flask import Flask
-from routes import bp
-import config
-
+from pymongo import MongoClient
+import os
 
 app = Flask(_name_)
-app.register_blueprint(bp)
-app.secret_key = config.SECRET_KEY
-app.config['SESSION_TYPE'] = 'filesystem'
 
+mongo_url = os.environ.get("MONGO_URL", "mongodb://mongo:27017/")
+client = MongoClient(mongo_url)
+db = client["nuelbank"]
 
-if _name_ == '_main_':
-app.run(host='0.0.0.0', port=5000, debug=True)
+@app.route("/")
+def home():
+    return "✅ NUEL BANK APPLICATION IS RUNNING SUCCESSFULLY!"
 
+@app.route("/health")
+def health():
+    return {"status": "OK", "service": "Nuel Bank"}
+
+if _name_ == "_main_":
+    app.run(host="0.0.0.0", port=5000, debug=True)
